@@ -141,6 +141,8 @@ void comm_execute()
   
   spinMotor(motorOne);
   spinMotor(motorTwo);
+
+  Serial.print("ack");
 }
 
 void loop()
