@@ -8,6 +8,13 @@
 #define motorOneSpeed 50
 #define motorTwoSpeed 40
 
+#define ULTRASONIC_1_TRIG 12
+#define ULTRASONIC_2_TRIG 7
+#define ULTRASONIC_3_TRIG 2
+#define ULTRASONIC_1_ECHO 13
+#define ULTRASONIC_2_ECHO 8
+#define ULTRASONIC_3_ECHO 4
+
 // relevant motor control parameters
 struct motorControl
 {
@@ -23,6 +30,42 @@ struct motorControl
 // motor control variables for each motor
 struct motorControl motorOne;
 struct motorControl motorTwo;
+
+long generic_ping(int trig, int echo) 
+{
+  // Clears the trigPin
+  digitalWrite(trig, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trig, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trig, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  long duration = pulseIn(echo, HIGH);
+  // Calculating the distance
+  return duration*0.034/2;
+}
+
+long ping_1() 
+{
+  pinMode(ULTRASONIC_1_TRIG, OUTPUT); // Sets the trigPin as an Output
+  pinMode(ULTRASONIC_1_ECHO, INPUT); // Sets the echoPin as an Input
+  return generic_ping(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO);
+}
+
+long ping_2() 
+{
+  pinMode(ULTRASONIC_2_TRIG, OUTPUT); // Sets the trigPin as an Output
+  pinMode(ULTRASONIC_2_ECHO, INPUT); // Sets the echoPin as an Input
+  return generic_ping(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO);
+}
+
+long ping_3() 
+{
+  pinMode(ULTRASONIC_3_TRIG, OUTPUT); // Sets the trigPin as an Output
+  pinMode(ULTRASONIC_3_ECHO, INPUT); // Sets the echoPin as an Input
+  return generic_ping(ULTRASONIC_3_TRIG, ULTRASONIC_3_ECHO);
+}
 
 void setup()
 {
@@ -43,6 +86,15 @@ void setup()
 
 void loop()
 {
+  if(ping_1() < 20) 
+  {
+    motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,0};
+    motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,0};
+  } else {
+    motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,motorOneSpeed};
+    motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,motorTwoSpeed};
+  }
+
   spinMotor(motorOne);
   spinMotor(motorTwo);
 }
