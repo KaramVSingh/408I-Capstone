@@ -5,8 +5,8 @@
 #define INB_2_pin 10
 #define PWM_2_pin 11
 #define BAUD_RATE 9600
-#define motorOneSpeed 50
-#define motorTwoSpeed 40
+#define motorOneSpeed 55
+#define motorTwoSpeed 60
 
 #define ULTRASONIC_1_TRIG 12
 #define ULTRASONIC_2_TRIG 7
@@ -86,7 +86,7 @@ void setup()
 
 void loop()
 {
-  if(ping_1() < 20) 
+  if(ping_1() < 30) 
   {
     motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,0};
     motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,0};
