@@ -5,8 +5,8 @@
 #define INB_2_pin 10
 #define PWM_2_pin 11
 #define BAUD_RATE 9600
-#define motorOneSpeed 55
-#define motorTwoSpeed 60
+#define motorOneSpeed 50
+#define motorTwoSpeed 55
 
 #define ULTRASONIC_1_TRIG 12
 #define ULTRASONIC_2_TRIG 7
@@ -14,6 +14,9 @@
 #define ULTRASONIC_1_ECHO 13
 #define ULTRASONIC_2_ECHO 8
 #define ULTRASONIC_3_ECHO 4
+
+#define FRONT_DIST 30
+#define SIDE_DIST 20
 
 // relevant motor control parameters
 struct motorControl
@@ -80,21 +83,77 @@ void setup()
   // sets initial state for each motor
   motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,motorOneSpeed};
   motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,motorTwoSpeed};
+  spinMotor(motorOne);
+  spinMotor(motorTwo);
 
   Serial.begin(BAUD_RATE);
 }
 
 void loop()
-{
-  if(ping_1() < 30) 
+{ 
+  if((int)ping_1() < FRONT_DIST)
   {
-    motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,0};
-    motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,0};
-  } else {
-    motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,motorOneSpeed};
-    motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,motorTwoSpeed};
-  }
+    if(ping_2() <= ping_3())
+    {
+      motorOne.INA_dir = LOW;
+      motorOne.INB_dir = HIGH;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = HIGH;
+    }
+    else
+    {
+      motorOne.INA_dir = HIGH;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
+    }
+    
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
 
+    while(ping_1() < FRONT_DIST)
+    {
+      Serial.println((int)ping_1());
+      delay(100);
+    }
+  }
+  /*
+  if((int)ping_2() < SIDE_DIST)
+  {
+    motorOne.INA_dir = LOW;
+    motorOne.INB_dir = HIGH;
+    motorTwo.INA_dir = LOW;
+    motorTwo.INB_dir = HIGH;
+
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
+
+    while(ping_2() < SIDE_DIST)
+    {
+      delay(50);
+    }
+  }
+  
+  if((int)ping_3() < SIDE_DIST)
+  {
+    motorOne.INA_dir = HIGH;
+    motorOne.INB_dir = LOW;
+    motorTwo.INA_dir = HIGH;
+    motorTwo.INB_dir = LOW;
+
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
+
+    while(ping_3() < SIDE_DIST)
+    {
+      delay(50);
+    }
+  }
+  */
+  motorOne.INA_dir = LOW;
+  motorOne.INB_dir = HIGH;
+  motorTwo.INA_dir = HIGH;
+  motorTwo.INB_dir = LOW;
   spinMotor(motorOne);
   spinMotor(motorTwo);
 }
