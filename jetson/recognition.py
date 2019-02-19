@@ -131,6 +131,3 @@ class Recognition:
 		# close all windows
 		cv2.destroyAllWindows()
 
-
-rec = Recognition()
-rec.begin()
