@@ -3,17 +3,11 @@ import time
 ser = serial.Serial('/dev/ttyACM2')  # open serial port
 time.sleep(5)
 print(ser.name)         # check which port was really used
-<<<<<<< HEAD
-while True:
-	ser.write(b'0');
-	print(ser.read())
-=======
 
 while True:
 	ser.write(b'0');
 	time.sleep(3)
 	print('hello')
->>>>>>> c8ae64367950c8e0a72bb594b515e334cbde4041
 
 ser.close()
 '''
