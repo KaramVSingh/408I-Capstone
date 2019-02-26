@@ -7,33 +7,44 @@ import cv2
 import imutils
 import time
 
+from communication import Communication
+
 last_position = (0, 0, 0)
 
 class Recognition:
 	def __init__(self):
 		self.last_position = (0, 0, 0)
+		self.comm = Communication();
+		print('initialization complete.')
 	
 	def process_coordinates(self, x, y, radius):
+		print('processing coordinates')
 		if abs(self.last_position[0] - x) > 100 or abs(self.last_position[1] - y) > 100:
-			print('error case')
+			# error case			
+			self.comm.send(b'5')
 		else:
 			# center is at x = 300
 			# radius of 30 is the stopping point
 			if x < 250:
-				print('turn left')
+				# turn left
+				self.comm.send(b'4')
 			elif x > 350:
-				print('turn right')
+				# turn right
+				self.comm.send(b'3')
 			else:
 				if(radius < 30):
-					print('move forwards')
+					# forwards
+					self.comm.send(b'1')
 				else:
-					print('stationary')
+					# stationary
+					self.comm.send(b'0')
 		self.last_position = (x, y, radius)
 
 	def begin(self):
 		# define the lower and upper boundaries of the "green"
 		# ball in the HSV color space, then initialize the
 		# list of tracked points
+		print('begin called.')
 		greenLower = (29, 86, 6)
 		greenUpper = (64, 255, 255)
 		pts = deque(maxlen=64)
@@ -48,9 +59,11 @@ class Recognition:
 
 		# keep looping
 		while True:
+			print('in loop')
 			# grab the current frame
 			frame = vs.read()
-		 
+			print('got frame')		 
+
 			# if we are viewing a video and we did not grab a frame,
 			# then we have reached the end of the video
 			if frame is None:
@@ -75,6 +88,8 @@ class Recognition:
 				cv2.CHAIN_APPROX_SIMPLE)
 			cnts = imutils.grab_contours(cnts)
 			center = None
+			
+			print('frame math complete')
 		 
 			# only proceed if at least one contour was found
 			if len(cnts) > 0:
@@ -85,6 +100,7 @@ class Recognition:
 				((x, y), radius) = cv2.minEnclosingCircle(c)
 		
 				self.process_coordinates(x, y, radius)		
+				print('coordinates processed')	
 	
 				M = cv2.moments(c)
 				center = (int(M["m10"] / M["m00"]), int(M["m01"] / M["m00"]))
