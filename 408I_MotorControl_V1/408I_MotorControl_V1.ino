@@ -89,8 +89,64 @@ void setup()
   Serial.begin(BAUD_RATE);
 }
 
+void comm_execute() 
+{
+  char c = Serial.read();
+  Serial.flush();
+  switch(c)
+  {
+    case '0':
+      // stationary
+      motorOne.INA_dir = LOW;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = LOW;
+      break;
+    case '1':
+      // forwards
+      motorOne.INA_dir = LOW;
+      motorOne.INB_dir = HIGH;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = HIGH;
+      break;
+    case '2':
+      // backwards
+      motorOne.INA_dir = HIGH;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
+      break;
+    case '3':
+      // right
+      motorOne.INA_dir = LOW;
+      motorOne.INB_dir = HIGH;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
+      break;
+    case '4':
+      // left
+      motorOne.INA_dir = HIGH;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = HIGH;
+      break;
+    default:
+      //stationary
+      motorOne.INA_dir = LOW;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = LOW;
+      break;
+  }
+  
+  spinMotor(motorOne);
+  spinMotor(motorTwo);
+}
+
 void loop()
 { 
+  comm_execute();
+  /*
   if((int)ping_1() < FRONT_DIST)
   {
     if(ping_2() <= ping_3())
@@ -117,6 +173,7 @@ void loop()
       delay(100);
     }
   }
+  */
   /*
   if((int)ping_2() < SIDE_DIST)
   {
@@ -150,12 +207,14 @@ void loop()
     }
   }
   */
+  /*
   motorOne.INA_dir = LOW;
   motorOne.INB_dir = HIGH;
   motorTwo.INA_dir = HIGH;
   motorTwo.INB_dir = LOW;
   spinMotor(motorOne);
   spinMotor(motorTwo);
+  */
 }
 
 // writes relevant parameters from motor control to the motor using the motor controller
