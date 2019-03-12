@@ -110,14 +110,7 @@ void wander()
     
     spinMotor(motorOne);
     spinMotor(motorTwo);
-
-    while(ping_1() < FRONT_DIST)
-    {
-      delay(100);
-    }
-  }
-
-  if((int)ping_2() < SIDE_DIST)
+  } else if((int)ping_2() < SIDE_DIST)
   {
     motorOne.INA_dir = LOW;
     motorOne.INB_dir = HIGH;
@@ -126,14 +119,7 @@ void wander()
 
     spinMotor(motorOne);
     spinMotor(motorTwo);
-
-    while(ping_2() < SIDE_DIST)
-    {
-      delay(50);
-    }
-  }
-  
-  if((int)ping_3() < SIDE_DIST)
+  } else if((int)ping_3() < SIDE_DIST)
   {
     motorOne.INA_dir = HIGH;
     motorOne.INB_dir = LOW;
@@ -142,20 +128,14 @@ void wander()
 
     spinMotor(motorOne);
     spinMotor(motorTwo);
-
-    while(ping_3() < SIDE_DIST)
-    {
-      delay(50);
-    }
+  } else {
+    motorOne.INA_dir = LOW;
+    motorOne.INB_dir = HIGH;
+    motorTwo.INA_dir = HIGH;
+    motorTwo.INB_dir = LOW;
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
   }
-
-  motorOne.INA_dir = LOW;
-  motorOne.INB_dir = HIGH;
-  motorTwo.INA_dir = HIGH;
-  motorTwo.INB_dir = LOW;
-  spinMotor(motorOne);
-  spinMotor(motorTwo);
-
 }
 
 void comm_execute() 

@@ -7,7 +7,7 @@ def get_new_mode():
 	# will return any of the following depending on what alex says
 	# "FOLLOW"
 	# "WANDER"
-	return "FOLLOW"
+	return "WANDER"
 
 while True:
 	# code body:
