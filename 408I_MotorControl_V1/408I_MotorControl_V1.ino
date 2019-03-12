@@ -157,6 +157,8 @@ void comm_execute()
       motorOne.INB_dir = LOW;
       motorTwo.INA_dir = LOW;
       motorTwo.INB_dir = LOW;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
       break;
     case '1':
       // forwards
@@ -164,6 +166,8 @@ void comm_execute()
       motorOne.INB_dir = HIGH;
       motorTwo.INA_dir = HIGH;
       motorTwo.INB_dir = LOW;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
       break;
     case '2':
       // backwards
@@ -171,6 +175,8 @@ void comm_execute()
       motorOne.INB_dir = LOW;
       motorTwo.INA_dir = LOW;
       motorTwo.INB_dir = HIGH;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
       break;
     case '3':
       // right
@@ -178,6 +184,8 @@ void comm_execute()
       motorOne.INB_dir = HIGH;
       motorTwo.INA_dir = LOW;
       motorTwo.INB_dir = HIGH;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
       break;
     case '4':
       // left
@@ -185,6 +193,8 @@ void comm_execute()
       motorOne.INB_dir = LOW;
       motorTwo.INA_dir = HIGH;
       motorTwo.INB_dir = LOW;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
       break;
     case '5':
       // wander mode
@@ -196,11 +206,11 @@ void comm_execute()
       motorOne.INB_dir = LOW;
       motorTwo.INA_dir = LOW;
       motorTwo.INB_dir = LOW;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
       break;
   }
   
-  spinMotor(motorOne);
-  spinMotor(motorTwo);
 }
 
 void loop()
