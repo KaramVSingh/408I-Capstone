@@ -5,17 +5,12 @@ SLEEP_TIME = 3
 
 class Communication:
 	def __init__(self):
-		self.ser = serial.Serial('/dev/ttyACM0')
+		self.ser = serial.Serial('/dev/ttyACM1')
 		time.sleep(SLEEP_TIME)
 
 	def send(self, message):
-		while(self.read() == None):
-			self.ser.flush()
-			print('sending ' + str(message))
-			self.ser.write(message)
-			print('sent')
-			self.ser.flush()
-			print('flushed')
+		print('sending ' + str(message))
+		self.ser.write(message)
 	
 	def read(self):
 		if self.ser.in_waiting:

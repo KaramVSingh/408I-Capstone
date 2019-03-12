@@ -1,13 +1,20 @@
 import serial
 import time
-ser = serial.Serial('/dev/ttyACM2')  # open serial port
+ser = serial.Serial('/dev/ttyACM1')  # open serial port
 time.sleep(5)
 print(ser.name)         # check which port was really used
 
 while True:
 	ser.write(b'0');
-	time.sleep(3)
-	print('hello')
+	time.sleep(1)
+	ser.write(b'1');
+	time.sleep(1)
+	ser.write(b'2');
+	time.sleep(1)
+	ser.write(b'3');
+	time.sleep(1)
+	ser.write(b'4');
+	time.sleep(1)
 
 ser.close()
 '''
