@@ -2,10 +2,26 @@ import serial
 import time
 
 SLEEP_TIME = 3
+ser = serial.Serial('/dev/ttyACM0')
+time.sleep(SLEEP_TIME)
 
+def send(message):
+	print('sending ' + str(message))
+	ser.write(message)
+
+def read():
+	if ser.in_waiting:
+		return ser.readline()
+	else:
+		return None
+
+def close():
+	ser.close()
+
+'''
 class Communication:
 	def __init__(self):
-		self.ser = serial.Serial('/dev/ttyACM1')
+		self.ser = serial.Serial('/dev/ttyACM0')
 		time.sleep(SLEEP_TIME)
 
 	def send(self, message):
@@ -20,3 +36,4 @@ class Communication:
 
 	def close(self):
 		self.ser.close()
+'''
