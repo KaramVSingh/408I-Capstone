@@ -89,6 +89,75 @@ void setup()
   Serial.begin(BAUD_RATE);
 }
 
+void wander() 
+{
+  if((int)ping_1() < FRONT_DIST)
+  {
+    if(ping_2() <= ping_3())
+    {
+      motorOne.INA_dir = LOW;
+      motorOne.INB_dir = HIGH;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = HIGH;
+    }
+    else
+    {
+      motorOne.INA_dir = HIGH;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
+    }
+    
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
+
+    while(ping_1() < FRONT_DIST)
+    {
+      delay(100);
+    }
+  }
+
+  if((int)ping_2() < SIDE_DIST)
+  {
+    motorOne.INA_dir = LOW;
+    motorOne.INB_dir = HIGH;
+    motorTwo.INA_dir = LOW;
+    motorTwo.INB_dir = HIGH;
+
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
+
+    while(ping_2() < SIDE_DIST)
+    {
+      delay(50);
+    }
+  }
+  
+  if((int)ping_3() < SIDE_DIST)
+  {
+    motorOne.INA_dir = HIGH;
+    motorOne.INB_dir = LOW;
+    motorTwo.INA_dir = HIGH;
+    motorTwo.INB_dir = LOW;
+
+    spinMotor(motorOne);
+    spinMotor(motorTwo);
+
+    while(ping_3() < SIDE_DIST)
+    {
+      delay(50);
+    }
+  }
+
+  motorOne.INA_dir = LOW;
+  motorOne.INB_dir = HIGH;
+  motorTwo.INA_dir = HIGH;
+  motorTwo.INB_dir = LOW;
+  spinMotor(motorOne);
+  spinMotor(motorTwo);
+
+}
+
 void comm_execute() 
 {
   if(!Serial.available()) {
@@ -137,6 +206,10 @@ void comm_execute()
       motorTwo.INA_dir = HIGH;
       motorTwo.INB_dir = LOW;
       break;
+    case '5':
+      // wander mode
+      wander();
+      break;
     default:
       //stationary
       motorOne.INA_dir = LOW;
@@ -153,75 +226,6 @@ void comm_execute()
 void loop()
 { 
   comm_execute();
-  /*
-  if((int)ping_1() < FRONT_DIST)
-  {
-    if(ping_2() <= ping_3())
-    {
-      motorOne.INA_dir = LOW;
-      motorOne.INB_dir = HIGH;
-      motorTwo.INA_dir = LOW;
-      motorTwo.INB_dir = HIGH;
-    }
-    else
-    {
-      motorOne.INA_dir = HIGH;
-      motorOne.INB_dir = LOW;
-      motorTwo.INA_dir = HIGH;
-      motorTwo.INB_dir = LOW;
-    }
-    
-    spinMotor(motorOne);
-    spinMotor(motorTwo);
-
-    while(ping_1() < FRONT_DIST)
-    {
-      Serial.println((int)ping_1());
-      delay(100);
-    }
-  }
-  */
-  /*
-  if((int)ping_2() < SIDE_DIST)
-  {
-    motorOne.INA_dir = LOW;
-    motorOne.INB_dir = HIGH;
-    motorTwo.INA_dir = LOW;
-    motorTwo.INB_dir = HIGH;
-
-    spinMotor(motorOne);
-    spinMotor(motorTwo);
-
-    while(ping_2() < SIDE_DIST)
-    {
-      delay(50);
-    }
-  }
-  
-  if((int)ping_3() < SIDE_DIST)
-  {
-    motorOne.INA_dir = HIGH;
-    motorOne.INB_dir = LOW;
-    motorTwo.INA_dir = HIGH;
-    motorTwo.INB_dir = LOW;
-
-    spinMotor(motorOne);
-    spinMotor(motorTwo);
-
-    while(ping_3() < SIDE_DIST)
-    {
-      delay(50);
-    }
-  }
-  */
-  /*
-  motorOne.INA_dir = LOW;
-  motorOne.INB_dir = HIGH;
-  motorTwo.INA_dir = HIGH;
-  motorTwo.INB_dir = LOW;
-  spinMotor(motorOne);
-  spinMotor(motorTwo);
-  */
 }
 
 // writes relevant parameters from motor control to the motor using the motor controller

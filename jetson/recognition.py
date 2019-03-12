@@ -74,6 +74,7 @@ def process_frame():
 	center = None
 			
 	print('frame math complete')
+	command = "ERROR"
 		 
 	# only proceed if at least one contour was found
 	if len(cnts) > 0:

@@ -18,4 +18,9 @@ while True:
 		command = recognition.process_frame()
 		if command != "ERROR":
 			communication.send(command)
+		else:
+			communication.send(b'0')
 		print("Command: " + str(command))
+	elif mode == "WANDER":
+		# wander command
+		communication.send(b'5')
