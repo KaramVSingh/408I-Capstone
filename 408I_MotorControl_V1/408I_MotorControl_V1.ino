@@ -1,9 +1,9 @@
-#define INA_1_pin 3
-#define INB_1_pin 5
-#define PWM_1_pin 6
-#define INA_2_pin 9
-#define INB_2_pin 10
-#define PWM_2_pin 11
+#define INA_1_pin 11
+#define INB_1_pin 10
+#define PWM_1_pin 9
+#define INA_2_pin 3
+#define INB_2_pin 4
+#define PWM_2_pin 5
 #define BAUD_RATE 9600
 #define motorOneSpeed 50
 #define motorTwoSpeed 55
@@ -81,8 +81,8 @@ void setup()
   }
 
   // sets initial state for each motor
-  motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,HIGH,motorOneSpeed};
-  motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,HIGH,LOW,motorTwoSpeed};
+  motorOne = {INA_1_pin,INB_1_pin,PWM_1_pin,LOW,LOW,motorOneSpeed};
+  motorTwo = {INA_2_pin,INB_2_pin,PWM_2_pin,LOW,LOW,motorTwoSpeed};
   spinMotor(motorOne);
   spinMotor(motorTwo);
 
@@ -91,8 +91,15 @@ void setup()
 
 void comm_execute() 
 {
+  if(!Serial.available()) {
+    return;
+  }
+  
   char c = Serial.read();
-  Serial.flush();
+  if(c == '\n' || c == '\r') {
+    return;
+  }
+  
   switch(c)
   {
     case '0':
@@ -106,29 +113,29 @@ void comm_execute()
       // forwards
       motorOne.INA_dir = LOW;
       motorOne.INB_dir = HIGH;
-      motorTwo.INA_dir = LOW;
-      motorTwo.INB_dir = HIGH;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
       break;
     case '2':
       // backwards
       motorOne.INA_dir = HIGH;
       motorOne.INB_dir = LOW;
-      motorTwo.INA_dir = HIGH;
-      motorTwo.INB_dir = LOW;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = HIGH;
       break;
     case '3':
       // right
       motorOne.INA_dir = LOW;
       motorOne.INB_dir = HIGH;
-      motorTwo.INA_dir = HIGH;
-      motorTwo.INB_dir = LOW;
+      motorTwo.INA_dir = LOW;
+      motorTwo.INB_dir = HIGH;
       break;
     case '4':
       // left
       motorOne.INA_dir = HIGH;
       motorOne.INB_dir = LOW;
-      motorTwo.INA_dir = LOW;
-      motorTwo.INB_dir = HIGH;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
       break;
     default:
       //stationary
@@ -141,8 +148,6 @@ void comm_execute()
   
   spinMotor(motorOne);
   spinMotor(motorTwo);
-
-  Serial.print("ack");
 }
 
 void loop()
