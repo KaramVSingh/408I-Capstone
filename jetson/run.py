@@ -1,6 +1,6 @@
 import recognition
 import communication
-from Threading import Thread, RLock
+from threading import Thread, RLock
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question
 
@@ -11,33 +11,46 @@ LOCK = RLock()
 app = Flask(__name__)
 ask = Ask(app, '/')
 
+def set_mode(new_mode):
+	global mode
+	with LOCK:
+		print('setting mode')
+		mode = new_mode
+
 @ask.launch
 def launched():
 	return question('What would you like me to do?')
 
 @ask.intent('ForwardsIntent')
 def forwards():
-	with LOCK:
-		mode = 'FORWARDS'
-	return statement('Going forwards.')
+	set_mode('FORWARDS')
+	return statement('Chicken Shwarma.')
 
 @ask.intent('BackwardsIntent')
 def backwards():
-	with LOCK:
-		mode = 'BACKWARDS'
-	return statement('Going backwards.')
+	set_mode('BACKWARDS')
+	return statement('Veggie Shwarma.')
 
-def get_new_mode():
-	# will return any of the following depending on what alex says
-	# "FOLLOW"
-	# "WANDER"
-	with LOCK:
-		return str(mode)
+@ask.intent('StopIntent')
+def forwards():
+	set_mode('FORWARDS')
+	return statement('Seitan Shwarma.')
+
+@ask.intent('FollowIntent')
+def backwards():
+	set_mode('FOLLOW')
+	return statement('Sahil Sharma.')
+
+@ask.intent('WanderIntent')
+def backwards():
+	set_mode('WANDER')
+	return statement('Lamb Shwarma.')
 
 def movement():
+	global mode
 	while True:
 		# code body:
-		curr_mode = get_new_mode()
+		curr_mode = str(mode)
 
 		if curr_mode == "FOLLOW":
 			# process camera coordinates and direct motors
@@ -56,8 +69,11 @@ def movement():
 		elif curr_mode == "BACKWARDS":
 			# backwards command
 			communication.send(b'2')
+		elif curr_mode == "STOP":
+			# stop command
+			communication.send(b'0')
 
-Thread(movement).start()
+Thread(target=movement).start()
 app.run(debug=True)
 
 

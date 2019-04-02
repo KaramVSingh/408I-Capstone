@@ -13,8 +13,16 @@ def hello(name):
 	return statement('Hello, {}'.format(name))
 
 @ask.intent('ByeIntent', default={'name': 'World'})
-def hello(name):
+def bye(name):
 	return statement('Chicken Shwarma, {}'.format(name))
+
+@ask.intent('ForwardsIntent')
+def forwards(name):
+	return statement('Going forwards')
+
+@ask.intent('BackwardsIntent')
+def backwards(name):
+	return statement('Going backwards')
 
 if __name__ == '__main__':
 	app.run(debug=True)
