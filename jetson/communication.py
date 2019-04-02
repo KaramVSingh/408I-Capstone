@@ -8,6 +8,7 @@ time.sleep(SLEEP_TIME)
 def send(message):
 	print('sending ' + str(message))
 	ser.write(message)
+	print('sent')
 
 def read():
 	if ser.in_waiting:

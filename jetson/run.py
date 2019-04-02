@@ -4,51 +4,26 @@ from threading import Thread, RLock
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question
 
+import time
+millis = lambda: int(round(time.time() * 1000))
+
 # run.py should house all of the commands that we will be using. It will do this in a hwile loop
-mode = 'FOLLOW'
+mode = 'BACKWARDS'
 LOCK = RLock()
 
-app = Flask(__name__)
-ask = Ask(app, '/')
-
 def set_mode(new_mode):
-	global mode
 	with LOCK:
-		print('setting mode')
+		global mode
 		mode = new_mode
-
-@ask.launch
-def launched():
-	return question('What would you like me to do?')
-
-@ask.intent('ForwardsIntent')
-def forwards():
-	set_mode('FORWARDS')
-	return statement('Chicken Shwarma.')
-
-@ask.intent('BackwardsIntent')
-def backwards():
-	set_mode('BACKWARDS')
-	return statement('Veggie Shwarma.')
-
-@ask.intent('StopIntent')
-def forwards():
-	set_mode('FORWARDS')
-	return statement('Seitan Shwarma.')
-
-@ask.intent('FollowIntent')
-def backwards():
-	set_mode('FOLLOW')
-	return statement('Sahil Sharma.')
-
-@ask.intent('WanderIntent')
-def backwards():
-	set_mode('WANDER')
-	return statement('Lamb Shwarma.')
 
 def movement():
 	global mode
+	last = 0
 	while True:
+		while millis() - last < 100:
+			pass
+		last = millis()
+
 		# code body:
 		curr_mode = str(mode)
 
@@ -72,9 +47,44 @@ def movement():
 		elif curr_mode == "STOP":
 			# stop command
 			communication.send(b'0')
+		else:
+			print('NO COMMAND')
 
 Thread(target=movement).start()
-app.run(debug=True)
+
+app = Flask(__name__)
+ask = Ask(app, '/')
+
+@ask.launch
+def launched():
+	return question('What would you like me to do?')
+
+@ask.intent('ForwardsIntent')
+def forwards():
+	set_mode('FORWARDS')
+	return statement('Chicken Shwarma.')
+
+@ask.intent('BackwardsIntent')
+def backwards():
+	set_mode('BACKWARDS')
+	return statement('Veggie Shwarma.')
+
+@ask.intent('StopIntent')
+def forwards():
+	set_mode('STOP')
+	return statement('Seitan Shwarma.')
+
+@ask.intent('FollowIntent')
+def backwards():
+	set_mode('FOLLOW')
+	return statement('Sahil Sharma.')
+
+@ask.intent('WanderIntent')
+def backwards():
+	set_mode('WANDER')
+	return statement('Lamb Shwarma.')
+
+app.run(debug=True, use_reloader=False)
 
 
 
