@@ -21,7 +21,10 @@ def process_coordinates(x, y, radius):
 	else:
 		# center is at x = 300
 		# radius of 30 is the stopping point
-		if x < 200:
+		if y < 50:
+			# the guy died
+			return  b'6'
+		elif x < 200:
 			# turn right
 			return b'3'
 		elif x > 400:

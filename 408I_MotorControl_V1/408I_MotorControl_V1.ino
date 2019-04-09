@@ -200,6 +200,15 @@ void comm_execute()
       // wander mode
       wander();
       break;
+    case '6':
+      // he died
+      motorOne.INA_dir = HIGH;
+      motorOne.INB_dir = LOW;
+      motorTwo.INA_dir = HIGH;
+      motorTwo.INB_dir = LOW;
+      spinMotor(motorOne);
+      spinMotor(motorTwo);
+      break;
     default:
       //stationary
       motorOne.INA_dir = LOW;

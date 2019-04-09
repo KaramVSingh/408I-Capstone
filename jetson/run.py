@@ -72,7 +72,7 @@ def backwards():
 @ask.intent('StopIntent')
 def forwards():
 	set_mode('STOP')
-	return statement('Seitan Shwarma.')
+	return statement('Sure, bitch.')
 
 @ask.intent('FollowIntent')
 def backwards():
