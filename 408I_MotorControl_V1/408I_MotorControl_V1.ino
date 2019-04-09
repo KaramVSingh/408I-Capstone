@@ -202,9 +202,9 @@ void comm_execute()
       break;
     case '6':
       // he died
-      motorOne.INA_dir = HIGH;
+      motorOne.INA_dir = LOW;
       motorOne.INB_dir = LOW;
-      motorTwo.INA_dir = HIGH;
+      motorTwo.INA_dir = LOW;
       motorTwo.INB_dir = LOW;
       spinMotor(motorOne);
       spinMotor(motorTwo);
