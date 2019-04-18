@@ -2,7 +2,7 @@
 
 import socket
 
-TCP_IP = '172.19.107.177'
+TCP_IP = '10.105.41.193'
 TCP_PORT = 9000
 BUFFER_SIZE = 2048
 _room_name = 'default'
@@ -82,24 +82,23 @@ def get_messages():
 	ret_messages = []
 	while i < len(_messages):
 		msg_length = int.from_bytes(_messages[i+2:i+6], byteorder='big')
-		print(_messages[i:len(_messages)])
-		print(msg_length)
 		i = i + 7
-		print(_messages[i:len(_messages)])
 		current_message = []
 		current_sub_message = b''
 		current_length = 0
 		for j in range(msg_length):
-			if _messages[i] != b'\x00':
+			if _messages[i] != 0:
 				if current_length == 0:
 					current_length = _messages[i]
 					if len(current_sub_message) > 0:
 						current_message += [current_sub_message.decode('utf-8')]
+						current_sub_message = b''
 				else:
 					current_length -= 1
 					current_sub_message += bytes([_messages[i]])
 			i += 1
 
+		current_message += [current_sub_message.decode('utf-8')]
 		ret_messages += [current_message]
 
 	_messages = b''
