@@ -67,15 +67,17 @@ class Client:
 	def close_connection(self):
 		with CLIENT_LOCK:
 			del clients[self.name]
+			self.room.remove_client(self)
 			clients_order.remove(self)
 		
 		self.connection.close()
-		exit()
+		sys.exit()
 
 	def recv(self, num_bytes):
 		data = self.connection.recv(num_bytes)
 		if(not data):
 			self.close_connection()
+			print('I DIDNT CLOSE')
 
 		return data
 
