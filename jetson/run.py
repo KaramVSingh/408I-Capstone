@@ -3,6 +3,8 @@ import communication
 from threading import Thread, RLock
 from flask import Flask, render_template
 from flask_ask import Ask, statement, question
+from Client import *
+from time import sleep
 
 import time
 millis = lambda: int(round(time.time() * 1000))
@@ -10,6 +12,7 @@ millis = lambda: int(round(time.time() * 1000))
 # run.py should house all of the commands that we will be using. It will do this in a hwile loop
 mode = 'STOP'
 LOCK = RLock()
+open_service('Robot-Robot')
 
 def set_mode(new_mode):
 	with LOCK:
@@ -17,7 +20,15 @@ def set_mode(new_mode):
 		mode = new_mode
 
 def you_ded_boi():
-	print('you ded boi')
+	ptint('sending ded')
+	send_room_message('I think Nitin died.')
+
+def are_you_ded():
+	sleep(2000)
+	command = recognition.process_frame()
+	if command == 'ERROR' or command == b'6':
+		you_ded_boi()
+	
 
 def movement():
 	global mode
@@ -44,7 +55,7 @@ def movement():
 			command = recognition.process_frame()
 			if command != "ERROR":
 				if command == b'6':
-					you_ded_boi()
+					are_you_ded()
 				communication.send(command)
 			else:
 				communication.send(b'0')
@@ -69,14 +80,9 @@ def movement():
 		elif curr_mode == "MONITOR":
 			# monitor command
 			command = recognition.process_frame()
-			if command != "ERROR":
-				if command == b'6':
-					you_ded_boi()
-					communication.send(command)
-				else:
-					communication.send(b'0')
-			else:
-				communication.send(b'0')
+			communication.send(b'0')
+			if command == b'6':
+				are_you_ded()
 		else:
 			print('NO COMMAND')
 
