@@ -67,7 +67,8 @@ class Client:
 	def close_connection(self):
 		with CLIENT_LOCK:
 			del clients[self.name]
-			self.room.remove_client(self)
+			if self.room != None:
+				self.room.remove_client(self)
 			clients_order.remove(self)
 		
 		self.connection.close()
