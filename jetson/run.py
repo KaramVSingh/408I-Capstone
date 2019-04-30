@@ -14,22 +14,32 @@ mode = 'STOP'
 LOCK = RLock()
 open_service('Robot-Robot')
 
+def read_messages():
+	mess = get_messages()
+	read = ''
+
+	for message in mess:
+		if len(message) == 3:
+			read += message[1] + ' sent ' + '"' + message[2] + '"' + ' to room ' + message[0] + '.'
+		else:
+			read += message[0] + ' sent you ' + '"' + message[1] + '".'
+	
+	return read
+
 def set_mode(new_mode):
 	with LOCK:
 		global mode
 		mode = new_mode
 
 def you_ded_boi():
-	ptint('sending ded')
 	send_room_message('I think Nitin died.')
 
 def are_you_ded():
-	sleep(2000)
+	sleep(2)
 	command = recognition.process_frame()
 	if command == 'ERROR' or command == b'6':
 		you_ded_boi()
 	
-
 def movement():
 	global mode
 	last = 0
@@ -62,6 +72,7 @@ def movement():
 		elif curr_mode == "WANDER":
 			# wander command
 			communication.send(b'5')
+			# send_room_message('Nitin wandered off again, can you help me find him?')
 		elif curr_mode == "FORWARDS":
 			# forwards command
 			communication.send(b'1')
@@ -135,11 +146,25 @@ def backwards():
 	set_mode('MONITOR')
 	return statement('I mean, I can watch.')
 
+@ask.intent('MessagesIntent')
+def messages():
+	set_mode('STOP')
+	return statement(read_messages())
+
+@ask.intent('PlayDeadIntent')
+def play_dead():
+	communication.send(b'7')
+	set_mode('BACKWARDS')
+	sleep(1)
+	set_mode('FORWARDS')
+	sleep(0.25)
+	set_mode('STOP')
+	communication.send(b'8')
+	
+	send_room_message('blegh')
+	return statement('blegh')
+
 app.run(debug=True, use_reloader=False)
-
-
-
-
 
 
 

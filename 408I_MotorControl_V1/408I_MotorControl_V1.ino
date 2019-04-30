@@ -9,11 +9,11 @@
 #define motorTwoSpeed 55
 
 #define ULTRASONIC_1_TRIG 12
-#define ULTRASONIC_2_TRIG 7
+#define ULTRASONIC_2_TRIG 13
 #define ULTRASONIC_3_TRIG 2
-#define ULTRASONIC_1_ECHO 13
-#define ULTRASONIC_2_ECHO 8
-#define ULTRASONIC_3_ECHO 4
+#define ULTRASONIC_1_ECHO 12
+#define ULTRASONIC_2_ECHO 13
+#define ULTRASONIC_3_ECHO 2
 
 #define FRONT_DIST 30
 #define SIDE_DIST 20
@@ -43,6 +43,7 @@ long generic_ping(int trig, int echo)
   digitalWrite(trig, HIGH);
   delayMicroseconds(10);
   digitalWrite(trig, LOW);
+  pinMode(echo,INPUT);
   // Reads the echoPin, returns the sound wave travel time in microseconds
   long duration = pulseIn(echo, HIGH);
   // Calculating the distance
@@ -52,21 +53,18 @@ long generic_ping(int trig, int echo)
 long ping_1() 
 {
   pinMode(ULTRASONIC_1_TRIG, OUTPUT); // Sets the trigPin as an Output
-  pinMode(ULTRASONIC_1_ECHO, INPUT); // Sets the echoPin as an Input
   return generic_ping(ULTRASONIC_1_TRIG, ULTRASONIC_1_ECHO);
 }
 
 long ping_2() 
 {
   pinMode(ULTRASONIC_2_TRIG, OUTPUT); // Sets the trigPin as an Output
-  pinMode(ULTRASONIC_2_ECHO, INPUT); // Sets the echoPin as an Input
   return generic_ping(ULTRASONIC_2_TRIG, ULTRASONIC_2_ECHO);
 }
 
 long ping_3() 
 {
   pinMode(ULTRASONIC_3_TRIG, OUTPUT); // Sets the trigPin as an Output
-  pinMode(ULTRASONIC_3_ECHO, INPUT); // Sets the echoPin as an Input
   return generic_ping(ULTRASONIC_3_TRIG, ULTRASONIC_3_ECHO);
 }
 
@@ -90,7 +88,7 @@ void setup()
 }
 
 void wander() 
-{
+{ 
   if((int)ping_1() < FRONT_DIST)
   {
     if(ping_2() <= ping_3())
@@ -208,6 +206,16 @@ void comm_execute()
       motorTwo.INB_dir = LOW;
       spinMotor(motorOne);
       spinMotor(motorTwo);
+      break;
+    case '7':
+      // speed up
+      motorOne.PWM_val = 100;
+      motorTwo.PWM_val = 100;
+      break;
+    case '8':
+      // slow down
+      motorOne.PWM_val = motorOneSpeed;
+      motorTwo.PWM_val = motorTwoSpeed;
       break;
     default:
       //stationary
