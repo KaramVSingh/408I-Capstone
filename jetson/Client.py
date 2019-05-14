@@ -2,7 +2,7 @@
 
 import socket
 
-TCP_IP = '10.104.37.143'
+TCP_IP = '10.104.42.108'
 TCP_PORT = 9000
 BUFFER_SIZE = 2048
 _room_name = 'default'

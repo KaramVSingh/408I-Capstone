@@ -5,6 +5,8 @@ from flask import Flask, render_template
 from flask_ask import Ask, statement, question
 from Client import *
 from time import sleep
+import json
+import datetime
 
 import time
 millis = lambda: int(round(time.time() * 1000))
@@ -32,7 +34,7 @@ def set_mode(new_mode):
 		mode = new_mode
 
 def you_ded_boi():
-	send_room_message('I think Nitin died.')
+	send_room_message('Nitin has fallen.')
 
 def are_you_ded():
 	sleep(2)
@@ -66,7 +68,8 @@ def movement():
 			if command != "ERROR":
 				if command == b'6':
 					are_you_ded()
-				communication.send(command)
+				else:
+					communication.send(command)
 			else:
 				communication.send(b'0')
 		elif curr_mode == "WANDER":
@@ -119,7 +122,7 @@ def backwards():
 @ask.intent('StopIntent')
 def forwards():
 	set_mode('STOP')
-	return statement('Sure, beetch.')
+	return statement('Fine I will.')
 
 @ask.intent('FollowIntent')
 def backwards():
@@ -163,6 +166,35 @@ def play_dead():
 	
 	send_room_message('blegh')
 	return statement('blegh')
+
+@ask.intent('PillsIntent')
+def pills():
+	new_json = None
+	pills = []
+	with open('pills.json') as json_file:
+		data = json.load(json_file)
+		day = datetime.datetime.today().weekday()
+		last = data['LAST']
+		for i in range(int(last), day):
+			pills += [data[str(i)]]
+
+		new_json = data
+		new_json['LAST'] = str(day)
+
+	with open('pills.json', 'w') as outfile:
+		json.dump(new_json, outfile)
+
+	if(len(pills) == 0):
+		return statement("You've already taken your pills today")
+ 
+	stmt = ''
+	for i, pill in enumerate(pills):
+		if i == len(pills) - 1:
+			stmt += pill + '.'
+		else:
+			stmt += pill + ', '
+
+	return statement(stmt)
 
 app.run(debug=True, use_reloader=False)
 
